@@ -34,7 +34,8 @@ public:
 	/**
 	* Getters for attributes from GDAttributeSetBase. Returns Current Value unless otherwise specified.
 	*/
-
+//주로 PS에서 Get함수를 통해 AS를 가져왔는데, 이제는 내부에서 매크로를 쓰거나 아니면 AttributeChange델리게이트를 통해 View만 업데이트하고, 
+//UI는 관찰하는 방식을 사용한다.
 	UFUNCTION(BlueprintCallable, Category = "GASDocumentation|GDPlayerState|Attributes")
 	float GetHealth() const;
 
@@ -90,8 +91,8 @@ protected:
 	UPROPERTY()
 	class UGDAttributeSetBase* AttributeSetBase;
 
-	FGameplayTag DeadTag;
-
+	FGameplayTag DeadTag;//IsAlive를 bool식의 설계가 아니라 Tag로 체크하는게 더 좋다. 아래의 StunTagChanged()가 예시.
+	
 	FDelegateHandle HealthChangedDelegateHandle;
 	FDelegateHandle MaxHealthChangedDelegateHandle;
 	FDelegateHandle HealthRegenRateChangedDelegateHandle;
@@ -104,8 +105,9 @@ protected:
 	FDelegateHandle XPChangedDelegateHandle;
 	FDelegateHandle GoldChangedDelegateHandle;
 	FDelegateHandle CharacterLevelChangedDelegateHandle;
+	//PS가 너무 많은 델리게이트들을 들고 있다. (어트리뷰트 변경 감지, 값 반환, UI텍스트표시)
+	//PS의 역할은 어디까지나 데이터 저장소이다. 위에처럼 컨트롤러의 역할을 해서는 안된다.
 
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	// Attribute changed callbacks
@@ -124,4 +126,7 @@ protected:
 
 	// Tag change callbacks
 	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+	//어떤스킬이 StunTag를 바꾸고자 할? 삽입하게 된다. 기존방식은 4초스턴을 입혔는데도, 1초후에 2초스턴이 들어가게 되면 2초후에 풀리게된다.
+	//이에 대한 우선순위의 로직이 복잡해지는데 테그카운팅을 이용한다면 쉽게 계산할 수 있다. 이를 참조카운팅이라고 한다.
+	//A GE 스킬이 State.Stun태그부여(Count 1) -> B스킬이 부여 (Count 2) -> B스킬 만료(Count 1) ->  A스킬 만료(Count 0) 해제
 };

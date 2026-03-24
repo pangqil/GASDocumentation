@@ -139,10 +139,12 @@ protected:
 	// Initialize the Character's attributes. Must run on Server but we run it on Client too
 	// so that we don't have to wait. The Server's replication to the Client won't matter since
 	// the values should be the same.
+	
 	virtual void InitializeAttributes();
-
+	//태어나자마자 Initialize GE를 통해 HP와 MP같은 기본 스탯값 부여하기.
+	//
 	virtual void AddStartupEffects();
-
+	//Character가 태어날때 기본적으로 들고있어야 하는 상태 부여
 
 	/**
 	* Setters for Attributes. Only use these in special cases like Respawning, otherwise use a GE to change Attributes.

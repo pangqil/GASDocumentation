@@ -30,8 +30,11 @@ public:
 	// Tells an ability to activate immediately when its granted. Used for passive abilities and abilities forced on others.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
 	bool ActivateAbilityOnGranted = false;
-
+	
 	// If an ability is marked as 'ActivateAbilityOnGranted', activate them immediately when given here
 	// Epic's comment: Projects may want to initiate passives or do other "BeginPlay" type of logic here.
 	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+	//어빌리티나 아바타가 설정될? 호출
+	
+	//OnInputPressed같은 함수를 통해 EnhancedInput 연동용으로 InputTag와 엮이는 호출함수가 있을듯
 };
